@@ -1,0 +1,32 @@
+int botaoAjuda = 2;
+int botaoExercicio = 3;
+int botaoBanheiro = 4;
+int buzzer = 8;
+
+void setup() {
+  pinMode(botaoAjuda, INPUT_PULLUP);
+  pinMode(botaoExercicio, INPUT_PULLUP);
+  pinMode(botaoBanheiro, INPUT_PULLUP);
+
+  pinMode(buzzer, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(botaoAjuda) == LOW) {
+    tone(buzzer, 1000);  // Emitir som de 1000 Hz
+    delay(1000);         // Atrasar para evitar múltiplos toques
+    noTone(buzzer);      // Parar o som
+  }
+
+  if (digitalRead(botaoExercicio) == LOW) {
+    tone(buzzer, 1500);  // Emitir som de 1500 Hz
+    delay(1000);
+    noTone(buzzer);
+  }
+
+  if (digitalRead(botaoBanheiro) == LOW) {
+    tone(buzzer, 2000);  // Emitir som de 2000 Hz
+    delay(1000);
+    noTone(buzzer);
+  }
+}
