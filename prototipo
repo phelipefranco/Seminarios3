@@ -1,3 +1,7 @@
+LINK PARA O PROJETO: https://www.tinkercad.com/things/cN0JVIrKPGN-prototipo-seminarios-3?sharecode=xEP1-uUd1PPpMB0hMLvifcWFVpFybq5HSJkJXo8OCGs
+
+Código:
+
 int botaoAjuda = 2;
 int botaoExercicio = 3;
 int botaoBanheiro = 4;
