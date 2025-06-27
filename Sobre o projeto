@@ -1,0 +1,5 @@
+O projeto "Auxiliador de Comunicação entre Pessoas que Usam e Não Usam Libras" foi idealizado com o objetivo de facilitar o diálogo básico entre pessoas surdas e ouvintes que não dominam a Língua Brasileira de Sinais (Libras). A solução é simples, acessível e de baixo custo: consiste em um sistema com um teclado numérico conectado a um microcontrolador (como o Arduino Uno) e um display LCD 16x2.
+
+Cada tecla do teclado está associada a uma mensagem pré-definida, como “Preciso de ajuda”, “Não entendi”, “Obrigado” ou “Quero ir ao banheiro”. Ao pressionar um número, a mensagem correspondente é exibida no display, permitindo que a pessoa surda se comunique de forma rápida e objetiva em situações cotidianas. Além disso, colocamos um jogo de pedra papel e tesoura apenas para mostrar que pode servir também como um entreterimento.
+
+O projeto visa não substituir a Libras, mas atuar como um recurso auxiliar em contextos em que a comunicação direta é dificultada pela ausência de intérpretes ou do conhecimento da língua de sinais por parte dos interlocutores.
