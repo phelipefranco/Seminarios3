@@ -1,0 +1,145 @@
+#include <Keypad.h>
+#include <LiquidCrystal.h>
+
+const byte ROWS = 4;
+const byte COLS = 4;
+
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+
+byte rowPins[ROWS] = {41, 40, 39, 38};
+byte colPins[COLS] = {37, 36, 35, 34};
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int buzzerPin = 10;
+
+unsigned long tempoUltimaMensagem = 0;
+bool mostrandoMensagem = false;
+
+enum Modo {MENU, MENSAGENS, JOGO};
+Modo modoAtual = MENU;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(buzzerPin, OUTPUT);
+  lcd.begin(16, 2);
+  mostrarMenu();
+}
+
+void mostrarMenu() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("* Mensagens");
+  lcd.setCursor(0, 1);
+  lcd.print("# Jogo PPT");
+  modoAtual = MENU;
+}
+
+void mostrarMensagemLCD(String linha1, String linha2 = "") {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(linha1);
+  if (linha2 != "") {
+    lcd.setCursor(0, 1);
+    lcd.print(linha2);
+  }
+  tempoUltimaMensagem = millis();
+  mostrandoMensagem = true;
+}
+
+void jogarPPT(char escolhaJogador) {
+  char opcoes[3] = {'A', 'B', 'C'};
+  char escolhaMaquina = opcoes[random(0, 3)];
+
+  String jogadas[3] = {"Pedra", "Papel", "Tesoura"};
+  int jogador = escolhaJogador - 'A';
+  int maquina = escolhaMaquina - 'A';
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Voce: " + jogadas[jogador]);
+  lcd.setCursor(0, 1);
+  lcd.print("PC: " + jogadas[maquina]);
+
+  delay(2000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+
+  if (jogador == maquina) {
+    lcd.print("Empate!");
+  } else if ((jogador == 0 && maquina == 2) ||
+             (jogador == 1 && maquina == 0) ||
+             (jogador == 2 && maquina == 1)) {
+    lcd.print("Voce venceu!");
+  } else {
+    lcd.print("PC venceu!");
+  }
+
+  delay(3000);
+  mostrarMenu();
+}
+
+void loop() {
+  char key = keypad.getKey();
+
+  if (key) {
+    switch (modoAtual) {
+      case MENU:
+        if (key == '*') {
+          lcd.clear();
+          lcd.print("Modo mensagens");
+          modoAtual = MENSAGENS;
+          delay(1000);
+          lcd.clear();
+        } else if (key == '#') {
+          lcd.clear();
+          lcd.print("Modo Jogo PPT");
+          modoAtual = JOGO;
+          delay(1000);
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("A: Pedra");
+          lcd.setCursor(0, 1);
+          lcd.print("B-Papel C-Tesou");
+        }
+        break;
+
+      case MENSAGENS:
+        switch (key) {
+          case '1': Serial.println("1. Preciso de ajuda"); mostrarMensagemLCD("Preciso de ajuda"); break;
+          case '2': Serial.println("2. Nao entendi"); mostrarMensagemLCD("Nao entendi"); break;
+          case '3': Serial.println("3. Poderia repetir?"); mostrarMensagemLCD("Poderia repetir?"); break;
+          case '4': Serial.println("4. Posso ir ao banheiro?"); mostrarMensagemLCD("Posso ir ao", "banheiro?"); break;
+          case '5': Serial.println("5. Posso ir beber agua?"); mostrarMensagemLCD("Posso ir beber", "agua?"); break;
+          case '6': Serial.println("6. Estou com fome"); mostrarMensagemLCD("Estou com fome"); break;
+          case '7': Serial.println("7. Estou com dor"); mostrarMensagemLCD("Estou com dor"); break;
+          case '8': Serial.println("8. Obrigado"); mostrarMensagemLCD("Obrigado"); break;
+          case '9': Serial.println("9. Por favor"); mostrarMensagemLCD("Por favor"); break;
+          case '0': tone(buzzerPin, 1000, 150); delay(200); noTone(buzzerPin); mostrarMensagemLCD("Chamando..."); break;
+          case 'D': mostrarMenu(); break; // Volta pro menu
+          default: mostrarMensagemLCD("Tecla invalida"); break;
+        }
+        break;
+
+      case JOGO:
+        if (key == 'A' || key == 'B' || key == 'C') {
+          jogarPPT(key);
+        } else if (key == 'D') {
+          mostrarMenu();
+        }
+        break;
+    }
+  }
+
+  if (modoAtual == MENSAGENS && mostrandoMensagem && (millis() - tempoUltimaMensagem >= 5000)) {
+    mostrarMenu();
+    mostrandoMensagem = false;
+  }
+}
